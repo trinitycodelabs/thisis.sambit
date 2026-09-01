@@ -1,0 +1,3 @@
+import { Navbar, Footer, SectionHeader, SetupProductCard } from '@/components/site'
+import { setup } from '@/lib/data'
+export default function SetupPage(){return <><Navbar/><main className="container page-main"><div className="page-heading"><p className="eyebrow">The essentials</p><h1>My <em>setup.</em></h1><p className="hero-sub">Everything I use to work, build and create. A considered collection, updated as the tools change.</p></div><SectionHeader eyebrow="Curated gear" title="What&apos;s on the desk"/><div className="setup-grid directory-grid">{setup.map(item=><SetupProductCard item={item} key={item.name}/>)}</div></main><Footer/></>}
