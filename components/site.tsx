@@ -2,8 +2,8 @@
 
 import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Maximize2, Menu, Moon, Sun, X } from 'lucide-react'
-import { products, setup, resources, posts, sponsors, reels, type Product, type SetupItem, type Resource, type Post } from '@/lib/data'
+import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Check, Coffee, FileText, Maximize2, Menu, Moon, Sparkles, Sun, Video, X } from 'lucide-react'
+import { products, setup, posts, sponsors, reels, creatorStats, highlights, buildLog, aboutQuote, aboutPhotos, type Product, type SetupItem, type Post } from '@/lib/data'
 
 const IG_PROFILE = 'https://www.instagram.com/thisis.sambit'
 
@@ -53,7 +53,7 @@ export function ReelsCarousel() {
       <div className="section-header">
         <div>
           <p className="eyebrow">Live from Instagram</p>
-          <h2 id="reels-title">Top performing reels</h2>
+          <h2 id="reels-title">Latest reels</h2>
         </div>
         <div className="carousel-controls">
           <button className="carousel-button" aria-label="Previous reels" onClick={() => scroll(-1)}><ArrowLeft size={16} /></button>
@@ -64,14 +64,25 @@ export function ReelsCarousel() {
       <div className="reels-track" ref={trackRef}>
         {reels.map((reel) => (
           <figure className="reel-card" key={reel.url}>
-            <blockquote
-              className="instagram-media"
-              data-instgrm-permalink={`${reel.url}?utm_source=ig_embed`}
-              data-instgrm-version="14"
-              style={{ background: 'var(--card)', border: 0, margin: 0, padding: 0, width: '100%' }}
-            >
-              <a href={reel.url} target="_blank" rel="noreferrer">View this reel on Instagram</a>
-            </blockquote>
+            <div className="reel-head">
+              <img src="/profile.png" alt="" />
+              <div>
+                <strong>thisis.sambit</strong>
+                <span>Instagram reel</span>
+              </div>
+              <a href={reel.url} target="_blank" rel="noreferrer" aria-label="Open reel on Instagram"><ArrowUpRight size={16} /></a>
+            </div>
+            {/* Instagram's embed header (with long song titles) can't be styled cross-origin, so .reel-frame crops it off. */}
+            <div className="reel-frame">
+              <blockquote
+                className="instagram-media"
+                data-instgrm-permalink={`${reel.url}?utm_source=ig_embed`}
+                data-instgrm-version="14"
+                style={{ background: 'var(--card)', border: 0, margin: 0, padding: 0, width: '100%' }}
+              >
+                <a href={reel.url} target="_blank" rel="noreferrer">View this reel on Instagram</a>
+              </blockquote>
+            </div>
           </figure>
         ))}
       </div>
@@ -79,9 +90,133 @@ export function ReelsCarousel() {
   )
 }
 
-export function ThemeToggle() { const [dark, setDark] = useState(false); return <button aria-label="Toggle theme" className="icon-button" onClick={() => { document.documentElement.classList.toggle('dark'); setDark(!dark) }}>{dark ? <Sun size={16}/> : <Moon size={16}/>}</button> }
-export function Navbar() { const [open, setOpen] = useState(false); return <header className="site-nav"><div className="container nav-inner"><Link href="/" className="wordmark">thisis<span>.sambit</span></Link><nav className={open ? 'nav-links open' : 'nav-links'}><Link href="/">Home</Link><Link href="/products">Products</Link><Link href="/setup">Setup</Link><Link href="/resources">Resources</Link><Link href="/about">About</Link></nav><div className="nav-actions"><ThemeToggle/><Link href="/products" className="button button-dark">Explore products <ArrowUpRight size={15}/></Link><button className="menu-toggle" aria-label="Toggle menu" onClick={() => setOpen(!open)}>{open ? <X/> : <Menu/>}</button></div></div></header> }
-export function Footer() { return <footer className="footer"><div className="container footer-top"><div><Link href="/" className="wordmark">thisis<span>.sambit</span></Link><p className="muted footer-copy">A small internet headquarters for<br/>products, ideas, and the journey.</p></div><div className="footer-links"><Link href="/products">Products</Link><Link href="/setup">Setup</Link><Link href="/resources">Resources</Link><Link href="/about">About</Link><a href="mailto:hello@thisis.sambit">Contact</a></div><div className="footer-social"><a href="#">X</a><a href="#">in</a><a href="#">gh</a><a href="#">yt</a></div></div><div className="container footer-bottom"><span>© 2026 Sambit Nanda</span><span>Made with intent.</span></div></footer> }
+export function ThemeToggle() {
+  const [dark, setDark] = useState(false)
+  useEffect(() => setDark(document.documentElement.classList.contains('dark')), [])
+  const toggle = () => {
+    const next = !dark
+    document.documentElement.classList.toggle('dark', next)
+    try { localStorage.setItem('theme', next ? 'dark' : 'light') } catch {}
+    setDark(next)
+  }
+  return <button aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'} className="icon-button theme-toggle" onClick={toggle}>{dark ? <Sun size={16}/> : <Moon size={16}/>}</button>
+}
+
+export function InstagramIcon({ size = 16 }: { size?: number }) {
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+}
+
+export function BuildLog({ preview = false }: { preview?: boolean }) {
+  // Data is oldest-first; show newest at the top and number entries chronologically.
+  // The home page preview shows "What's next" plus the latest real product.
+  const entries = buildLog.map((entry, i) => ({ entry, i })).reverse()
+  const latest = entries.find(({ entry }) => entry.status !== 'Next')
+  const shown = preview ? entries.filter(e => e.entry.status === 'Next' || e === latest) : entries
+  return (
+    <ol className="build-log">
+      {shown.map(({ entry, i }) => { return (
+        <li key={entry.name} className={'log-item log-' + entry.status.toLowerCase()}>
+          <span className="log-dot" aria-hidden="true" />
+          <div className="log-card">
+            <div className="log-head">
+              <span className="log-index">0{i + 1} · {entry.date}</span>
+              <span className={'log-status log-status-' + entry.status.toLowerCase()}>{entry.status}</span>
+            </div>
+            <div className="log-title">
+              {entry.logo
+                ? <img src={entry.logo} alt={entry.name + ' logo'} className="log-logo" />
+                : <span className="log-logo log-logo-empty" aria-hidden="true"><Sparkles size={20}/></span>}
+              <h3>{entry.name}</h3>
+            </div>
+            <p>{entry.summary}</p>
+            {entry.stats && <dl className="log-stats">{entry.stats.map(st => <div key={st.label}><dt>{st.label}</dt><dd>{st.value}</dd></div>)}</dl>}
+            {entry.lesson && <p className="log-lesson"><strong>What I learned:</strong> {entry.lesson}</p>}
+            {entry.url && <a href={entry.url} target="_blank" rel="noreferrer" className="text-link">Visit {entry.name} <ArrowUpRight size={15}/></a>}
+          </div>
+        </li>
+      )})}
+      {!preview && <li className="log-origin">
+        <span className="log-dot" aria-hidden="true" />
+        <span>Where it all started · {buildLog[0].date}</span>
+      </li>}
+    </ol>
+  )
+}
+
+const serviceIcons: Record<string, typeof Video> = {
+  '1-1-weekend-catch-up': Coffee,
+  'frontend-mock-interview': Video,
+  'resume-review': FileText,
+  'most-asked-dsa-questions-js-book': BookOpen,
+}
+
+export function ServiceList() {
+  const services = products.filter(p => p.status === 'LIVE')
+  return (
+    <div className="service-grid">
+      {services.map(s => {
+        const Icon = serviceIcons[s.slug] ?? Video
+        return (
+          <a key={s.slug} href={s.buyUrl} target="_blank" rel="noreferrer" className="service-card">
+            <div className="service-top">
+              <span className="service-icon"><Icon size={20}/></span>
+              {s.badge && <span className="tag tag-orange">{s.badge}</span>}
+            </div>
+            <span className="service-meta">{s.duration ?? 'Digital download · PDF'}</span>
+            <h3>{s.name}</h3>
+            <p>{s.description}</p>
+            <div className="service-bottom">
+              <span className="product-price-row"><span className="price-now">{s.price}</span>{s.originalPrice && <span className="price-was">{s.originalPrice}</span>}{s.rating && <span className="service-rating">★ {s.rating}</span>}</span>
+              <span className="service-cta">{s.category === 'Coaching' ? 'Book' : 'Get it'} <ArrowUpRight size={15}/></span>
+            </div>
+          </a>
+        )
+      })}
+    </div>
+  )
+}
+
+// Repeating wide/narrow pattern so rows read like: wide · narrow · narrow, then narrow · wide · narrow.
+const photoSpans = ['wide', 'narrow', 'narrow', 'narrow', 'wide', 'narrow']
+
+export function AboutGallery() {
+  return (
+    <section className="about-gallery">
+      <div className="gallery-quote">
+        <h2>{aboutQuote.text}</h2>
+        <p>{aboutQuote.sub}</p>
+      </div>
+      <div className="photo-grid">
+        {aboutPhotos.map((photo, i) => (
+          <figure key={photo.src} className={'photo-tile ' + photoSpans[i % photoSpans.length]}>
+            <img src={photo.src} alt={photo.alt} loading="lazy" />
+          </figure>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+export function StatsStrip() {
+  return <div className="stats-strip">{creatorStats.map(s => <div className="stat" key={s.label}><strong>{s.value}</strong><span>{s.label}</span></div>)}</div>
+}
+
+export function Bento() {
+  return (
+    <div className="bento">
+      {highlights.map(h => {
+        const external = h.href.startsWith('http')
+        const body = <><span className={'tag tag-' + h.tone}>{h.tag}</span><h3>{h.title}</h3><p>{h.description}</p><span className="text-link">{h.linkText} <ArrowUpRight size={15}/></span></>
+        const cls = h.wide ? 'bento-cell wide' : 'bento-cell'
+        return external
+          ? <a key={h.title} href={h.href} target="_blank" rel="noreferrer" className={cls}>{body}</a>
+          : <Link key={h.title} href={h.href} className={cls}>{body}</Link>
+      })}
+    </div>
+  )
+}
+export function Navbar() { const [open, setOpen] = useState(false); return <header className="site-nav"><div className="container nav-inner"><Link href="/" className="wordmark">thisis<span>.sambit</span></Link><nav className={open ? 'nav-links open' : 'nav-links'}><Link href="/">Home</Link><Link href="/products">Build log</Link><Link href="/setup">Setup</Link><Link href="/about">About</Link></nav><div className="nav-actions"><ThemeToggle/><a href={IG_PROFILE} target="_blank" rel="noreferrer" className="button button-brand"><InstagramIcon size={15}/> Follow</a><button className="menu-toggle" aria-label="Toggle menu" onClick={() => setOpen(!open)}>{open ? <X/> : <Menu/>}</button></div></div></header> }
+export function Footer() { return <footer className="footer"><div className="container footer-top"><div><Link href="/" className="wordmark">thisis<span>.sambit</span></Link><p className="muted footer-copy">A small internet headquarters for<br/>products, ideas, and the journey.</p></div><div className="footer-links"><Link href="/products">Build log</Link><Link href="/setup">Setup</Link><Link href="/about">About</Link><a href="mailto:hello@thisis.sambit">Contact</a></div><div className="footer-social"><a href={IG_PROFILE} target="_blank" rel="noreferrer">Instagram</a><a href="#">LinkedIn</a><a href="#">GitHub</a><a href="#">YouTube</a></div></div><div className="container footer-bottom"><span>© 2026 Sambit Nanda</span><span>Made with intent.</span></div></footer> }
 export function SectionHeader({eyebrow, title, link}: {eyebrow:string; title:string; link?: string}) { return <div className="section-header"><div><p className="eyebrow">{eyebrow}</p><h2>{title}</h2></div>{link && <Link href={link} className="text-link">View all <ArrowUpRight size={15}/></Link>}</div> }
 export function StatusBadge({status}: {status: Product['status']}) { return <span className={'status status-'+status.toLowerCase().replace(' ','-')}><i/> {status}</span> }
 export function SponsorCarousel() { const [active, setActive] = useState(0); const sponsor = sponsors[active]; const move = (direction: number) => setActive((active + direction + sponsors.length) % sponsors.length); return <section className="sponsor-section container" aria-labelledby="sponsor-title"><div className="sponsor-heading"><div><p className="eyebrow">Featured on the desk</p><h2 id="sponsor-title">Objects behind the work.</h2><p className="sponsor-subtitle">A rotating shelf of products I use, recommend, or partner with. Paid relationships are always labelled.</p></div><div className="carousel-controls"><button className="carousel-button" aria-label="Previous sponsor" onClick={() => move(-1)}><ArrowLeft size={16}/></button><button className="carousel-button" aria-label="Next sponsor" onClick={() => move(1)}><ArrowRight size={16}/></button></div></div><div className="sponsor-track" role="region" aria-live="polite" aria-label="Featured brand sponsors"><article className={'sponsor-feature '+sponsor.accent}><div className="sponsor-brand-mark">{sponsor.mark}</div><div className="sponsor-feature-copy"><span className="sponsor-index">0{active + 1} / 0{sponsors.length}</span><h3>{sponsor.name}</h3><p>{sponsor.tagline}</p></div><div className="sponsor-bottomline"><span className="sponsor-category">{sponsor.category}</span><span className="sponsor-disclosure">{sponsor.disclosure}</span></div><ArrowUpRight className="sponsor-arrow" size={19}/></article><div className="sponsor-mini-list">{sponsors.map((item, index) => <button key={item.name} className={index === active ? 'sponsor-mini active' : 'sponsor-mini'} onClick={() => setActive(index)} aria-label={'Show '+item.name+' sponsor'}><span>{item.mark}</span><strong>{item.name}</strong><small>{item.category}</small></button>)}</div></div></section> }
@@ -142,10 +277,9 @@ export function BuyButton({ url, type, price, retailer }: { url: string; type: '
   )
 }
 
-export function ProductCard({product}: {product: Product}) { return <Link href={'/products/'+product.slug} className="product-card"><div className={'product-visual '+product.accent}><span className="product-mark">{product.mark}</span><span className="visual-label">thisis.sambit / 0{products.indexOf(product)+1}</span></div><div className="card-meta"><div><div className="card-title">{product.name}</div><p>{product.description}</p></div><ArrowUpRight size={18}/></div><div className="card-bottom"><StatusBadge status={product.status}/>{product.price !== '—' && <span>{product.price}</span>}</div></Link> }
+export function ProductCard({product}: {product: Product}) { return <Link href={'/products/'+product.slug} className="product-card"><div className={'product-visual '+product.accent}><span className="product-mark">{product.mark}</span><span className="visual-label">thisis.sambit / 0{products.indexOf(product)+1}</span>{product.badge && <span className="product-badge">{product.badge}</span>}</div><div className="card-meta"><div>{product.duration && <span className="product-format">{product.duration}</span>}<div className="card-title">{product.name}</div><p>{product.description}</p></div><ArrowUpRight size={18}/></div><div className="card-bottom"><span className="product-price-row">{product.price !== '—' && <span className="price-now">{product.price}</span>}{product.originalPrice && <span className="price-was">{product.originalPrice}</span>}</span>{product.rating ? <span className="product-rating">★ {product.rating}</span> : <StatusBadge status={product.status}/>}</div></Link> }
 export function SetupProductCard({item}: {item: SetupItem}) { return <Link href={'/setup/'+item.slug} className="setup-card"><div className="setup-image"><img src={item.image} alt={item.name}/><span className="category-pill">{item.category}</span></div><div className="setup-info"><div><h3>{item.name}</h3><p>{item.description}</p></div><span className="price">{item.price}</span></div></Link> }
-export function ResourceCard({item}: {item: Resource}) { return <a href="#" className="resource-card"><span className="resource-mark">{item.mark}</span><div><h3>{item.name}</h3><p>{item.description}</p></div><span className="resource-cat">{item.category}</span><ArrowUpRight size={16}/></a> }
 export function BlogCard({post}: {post: Post}) { return <a href="#" className="blog-card"><img src={post.image} alt=""/><div className="blog-info"><div className="blog-meta"><span>{post.category}</span><span>{post.date}</span></div><h3>{post.title}</h3><span className="muted">{post.read} <ArrowUpRight size={14}/></span></div></a> }
 export function Newsletter() { const [email, setEmail] = useState(''); const [joined, setJoined] = useState(false); return <div className="newsletter"><div><p className="eyebrow">Stay in the loop</p><h2>Follow the journey.</h2><p className="muted">Products I&apos;m building, things I&apos;m learning and useful resources — occasionally in your inbox.</p></div>{joined ? <div className="joined"><Check size={18}/> You&apos;re on the list.</div> : <form onSubmit={e => {e.preventDefault(); if(email) setJoined(true)}}><input type="email" placeholder="Your email" value={email} onChange={e=>setEmail(e.target.value)} required/><button className="button button-dark">Join the journey <ArrowUpRight size={15}/></button></form>}</div> }
-export function CTA() { return <section className="cta container"><div><p className="eyebrow">What&apos;s next</p><h2>I&apos;m always building<br/><em>something.</em></h2></div><Link href="/products" className="button button-light">See what I&apos;m working on <ArrowUpRight size={16}/></Link></section> }
-export { products, setup, resources, posts }
+export function CTA() { return <section className="cta container"><div><p className="eyebrow">What&apos;s next</p><h2>I&apos;m always building<br/><em>something.</em></h2></div><Link href="/products" className="button button-brand">See what I&apos;m working on <ArrowUpRight size={16}/></Link></section> }
+export { products, setup, posts }

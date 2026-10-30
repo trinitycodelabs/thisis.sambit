@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Navbar, Footer, CTA } from "@/components/site";
+import { Navbar, Footer, CTA, AboutGallery } from "@/components/site";
 export default function AboutPage() {
   return (
     <>
@@ -12,7 +12,7 @@ export default function AboutPage() {
         <div className="about-columns">
           <div className="about-monogram large">
             <Image
-              src="/IMG_4148.PNG"
+              src="/profile.png"
               alt="Sambit"
               width={360}
               height={360}
@@ -42,6 +42,7 @@ export default function AboutPage() {
             </div>
           </div>
         </div>
+        <AboutGallery />
       </main>
       <CTA />
       <Footer />

@@ -1,20 +1,23 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowDownRight, ArrowUpRight, MoveUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import {
   Navbar,
   Footer,
   SectionHeader,
-  ProductCard,
   SetupProductCard,
-  ResourceCard,
-  BlogCard,
+  ServiceList,
   Newsletter,
   CTA,
-  SponsorCarousel,
   ReelsCarousel,
+  InstagramIcon,
+  StatsStrip,
+  Bento,
+  BuildLog,
 } from "@/components/site";
-import { products, setup, resources, posts } from "@/lib/data";
+import { setup, creatorStats } from "@/lib/data";
+
+const IG_PROFILE = "https://www.instagram.com/thisis.sambit";
 
 export default function Page() {
   return (
@@ -32,12 +35,19 @@ export default function Page() {
           >
             <source src="/hero-light.mp4" type="video/mp4" />
           </video>
-        <section className="hero container">
-          <div className="hero-copy">
-            <div className="eyebrow intro-eyebrow">
-              <span className="pulse" /> Software Engineer <b>•</b> Founder{" "}
-              <b>•</b> Builder
-            </div>
+          <div className="hero-grid" />
+          <div className="hero-glow" />
+          <section className="hero container">
+            <a
+              href={IG_PROFILE}
+              target="_blank"
+              rel="noreferrer"
+              className="hero-pill"
+            >
+              <Image src="/profile.png" alt="" width={26} height={26} />
+              Followed by <b>{creatorStats[0].value}</b> on Instagram
+              <ArrowUpRight size={14} />
+            </a>
             <h1>
               I build products
               <br />
@@ -45,54 +55,47 @@ export default function Page() {
             </h1>
             <p className="hero-sub">
               Software Engineer & Founder building AI, SaaS and digital products
-              while sharing the journey along the way.
+              — and breaking down tech in bite-sized reels along the way.
             </p>
             <div className="hero-actions">
-              <Link href="/products" className="button button-dark">
-                Explore my products <ArrowUpRight size={16} />
-              </Link>
-              <a href="#journey" className="button button-ghost">
-                Follow my journey <ArrowDownRight size={16} />
+              <a
+                href={IG_PROFILE}
+                target="_blank"
+                rel="noreferrer"
+                className="button button-brand"
+              >
+                <InstagramIcon size={16} /> Follow @thisis.sambit
               </a>
+              <Link href="/products" className="button button-outline">
+                See my build log <ArrowUpRight size={16} />
+              </Link>
             </div>
-            <div className="hero-note">
-              <span>Based between</span>
-              <strong>
-                India <i>→</i> London
-              </strong>
-            </div>
-          </div>
-          <div className="portrait">
-            <div className="portrait-glow" />
-            <div className="portrait-inner">
-              <div className="portrait-initial">SN</div>
-              <span>
-                THIS IS
-                <br />
-                Sambit
-              </span>
-            </div>
-            <div className="portrait-caption">
-              Building from wherever there&apos;s
-              <br />
-              good coffee and a clear signal.
-            </div>
-          </div>
-        </section>
+            <StatsStrip />
+          </section>
         </div>
-        <SponsorCarousel />
+        <section className="container section">
+          <SectionHeader eyebrow="What you'll find here" title="Everything, in one place" />
+          <Bento />
+        </section>
+        <section className="container section" id="work-with-me">
+          <SectionHeader eyebrow="Work with me" title="1:1 calls & resources" />
+          <p className="section-lede">
+            Mock interviews, resume reviews and interview prep — booked and delivered via Topmate.
+          </p>
+          <ServiceList />
+        </section>
         <section className="container section">
           <SectionHeader
-            eyebrow="The studio"
-            title="Things I'm building"
+            eyebrow="The build log"
+            title="Shipped, failed, logged"
             link="/products"
           />
-          <div className="product-grid">
-            {products.slice(0, 3).map((p) => (
-              <ProductCard product={p} key={p.slug} />
-            ))}
-          </div>
+          <p className="section-lede">
+            What I&apos;m building next, and my latest build — every product, including the ones that didn&apos;t work, is in the full log.
+          </p>
+          <BuildLog preview />
         </section>
+        <ReelsCarousel />
         <section className="container section setup-preview">
           <SectionHeader
             eyebrow="The essentials"
@@ -108,63 +111,10 @@ export default function Page() {
             ))}
           </div>
         </section>
-        <section className="container section store-section">
-          <div className="store-copy">
-            <p className="eyebrow">The digital shelf</p>
-            <h2>
-              Useful things,
-              <br />
-              <em>beautifully made.</em>
-            </h2>
-            <p className="muted">
-              Templates, tools, and field notes for people building their own
-              corner of the internet.
-            </p>
-            <Link href="/products" className="text-link">
-              Browse the digital store <ArrowUpRight size={15} />
-            </Link>
-          </div>
-          <div className="store-card">
-            <div className="store-orbit">S</div>
-            <div>
-              <span className="status status-building">
-                <i /> Coming next
-              </span>
-              <h3>Signal Kit</h3>
-              <p>A field guide for building in public without the noise.</p>
-            </div>
-            <ArrowUpRight size={18} />
-          </div>
-        </section>
-        <section className="container section">
-          <SectionHeader
-            eyebrow="Good tools, shared freely"
-            title="Resources I recommend"
-            link="/resources"
-          />
-          <div className="resource-grid">
-            {resources.map((item) => (
-              <ResourceCard item={item} key={item.name} />
-            ))}
-          </div>
-        </section>
-        <ReelsCarousel />
-        <section className="container section" id="journey">
-          <SectionHeader
-            eyebrow="Notes from the road"
-            title="Building in public"
-            link="/about"
-          />
-          <div className="blog-grid">
-            {posts.map((post) => (
-              <BlogCard post={post} key={post.title} />
-            ))}
-          </div>
-        </section>
         <section className="about-strip container">
           <div className="about-monogram">
             <Image
-              src="/IMG_4148.PNG"
+              src="/profile.png"
               alt="Sambit"
               width={200}
               height={200}

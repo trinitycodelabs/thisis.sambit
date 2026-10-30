@@ -1,6 +1,5 @@
-export type Product = { slug: string; name: string; description: string; category: string; status: 'LIVE' | 'BUILDING' | 'COMING SOON'; price: string; accent: string; mark: string; featured?: boolean; images: string[]; longDescription: string; features: string[]; buyUrl: string; buyType: 'direct' | 'affiliate' }
+export type Product = { slug: string; name: string; description: string; category: string; status: 'LIVE' | 'BUILDING' | 'COMING SOON'; price: string; originalPrice?: string; accent: string; mark: string; featured?: boolean; images: string[]; longDescription: string; features: string[]; buyUrl: string; buyType: 'direct' | 'affiliate'; duration?: string; rating?: number; badge?: string }
 export type SetupItem = { slug: string; name: string; category: string; description: string; price: string; image: string; images: string[]; longDescription: string; buyUrl: string; buyType: 'affiliate' | 'direct'; retailer: string }
-export type Resource = { name: string; category: string; description: string; mark: string }
 export type Post = { title: string; category: string; date: string; read: string; image: string }
 
 const gallery = (_dir: string, _n: number) => ['/cmc.jpg']
@@ -37,6 +36,42 @@ export const products: Product[] = [
     longDescription: 'Relay lets small teams connect the tools they already use with short, readable automations — no flowchart canvas, just a few lines that do one job well.',
     features: ['50+ integrations', 'Readable automation syntax', 'Run history and alerts', 'Generous free tier'],
     buyUrl: 'https://relay.thisis-sambit.com/signup', buyType: 'direct',
+  },
+  {
+    slug: '1-1-weekend-catch-up', name: '1:1 Weekend Catch-Up', description: 'Got something you want to discuss?',
+    category: 'Coaching', status: 'LIVE', price: '₹59', accent: 'blue', mark: '1:1',
+    duration: 'Video meeting · 30 mins', badge: 'Popular',
+    images: gallery('services/catch-up', 1),
+    longDescription: 'A casual 30-minute video call to talk through whatever is on your mind — career questions, a product idea, or just a weekend check-in. Booked and hosted via Topmate.',
+    features: ['30-minute video call', 'Booked via Topmate', 'Flexible weekend slots'],
+    buyUrl: 'https://topmate.io/thisissambit/2283229?utm_source=public_profile&utm_campaign=thisissambit', buyType: 'direct',
+  },
+  {
+    slug: 'most-asked-dsa-questions-js-book', name: 'Most Asked DSA Questions in JS Book', description: 'Best collection of most asked DSA questions in JavaScript! 🔥',
+    category: 'Digital Products', status: 'LIVE', price: '₹299', originalPrice: '₹499', accent: 'lime', mark: 'JS',
+    badge: 'Best Seller',
+    images: gallery('services/dsa-book', 1),
+    longDescription: 'A curated collection of the most frequently asked DSA questions in JavaScript, with clear explanations — built from real interview prep sessions.',
+    features: ['Digital download (PDF)', 'Most asked DSA questions in JS', 'Lifetime access'],
+    buyUrl: 'https://topmate.io/thisissambit/2283267?utm_source=public_profile&utm_campaign=thisissambit', buyType: 'direct',
+  },
+  {
+    slug: 'frontend-mock-interview', name: 'Frontend Mock interview with me', description: 'Practice a real frontend interview end to end.',
+    category: 'Coaching', status: 'LIVE', price: '₹1,499', originalPrice: '₹2,199', accent: 'violet', mark: 'FE',
+    duration: 'Video meeting · 45 mins', rating: 5, badge: 'Popular',
+    images: gallery('services/mock-interview', 1),
+    longDescription: 'A 45-minute mock frontend interview covering JS fundamentals, DSA, and system design basics, with honest feedback at the end. Booked and hosted via Topmate.',
+    features: ['45-minute video call', 'Live coding + feedback', 'Booked via Topmate'],
+    buyUrl: 'https://topmate.io/thisissambit', buyType: 'direct',
+  },
+  {
+    slug: 'resume-review', name: 'Resume review', description: 'Get your resume reviewed line by line.',
+    category: 'Coaching', status: 'LIVE', price: '₹899', originalPrice: '₹1,199', accent: 'orange', mark: 'CV',
+    duration: 'Video meeting · 15 mins', rating: 5,
+    images: gallery('services/resume-review', 1),
+    longDescription: 'A focused 15-minute session going through your resume line by line with actionable edits for clarity and impact. Booked and hosted via Topmate.',
+    features: ['15-minute video call', 'Line-by-line feedback', 'Booked via Topmate'],
+    buyUrl: 'https://topmate.io/thisissambit', buyType: 'direct',
   },
 ]
 
@@ -105,24 +140,16 @@ export const setup: SetupItem[] = [
   {
     slug: 'macbook-pro-m4-pro', name: 'MacBook Pro (M4 Pro)', category: 'Workstation',
     description: 'The daily driver.', price: '₹1,99,900',
-    image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=900&q=80',
+    image: 'https://m.media-amazon.com/images/I/61z5pPjUGJL.jpg',
     images: [
-      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1400&q=80',
-      'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=1400&q=80',
-      'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=1400&q=80',
-      'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=1400&q=80',
+      'https://m.media-amazon.com/images/I/61z5pPjUGJL.jpg',
+      'https://m.media-amazon.com/images/I/61eA9PkZ07L._SL1500_.jpg',
+      'https://m.media-amazon.com/images/I/61v405rSEeL._SL1500_.jpg',
     ],
     longDescription: 'The M4 Pro MacBook Pro chews through builds, containers and video edits without the fans ever making themselves known. The Space Black finish, bright XDR display and all-day battery make it the one machine I actually want to carry.',
     buyUrl: 'https://www.apple.com/in/shop/buy-mac/macbook-pro/14-inch-m4-pro',
     buyType: 'affiliate', retailer: 'Apple',
   },
-]
-
-export const resources: Resource[] = [
-  { name: 'Vercel', category: 'Hosting', description: 'The best place to ship the web.', mark: '▲' },
-  { name: 'Linear', category: 'Productivity', description: 'Where product work gets done.', mark: 'L' },
-  { name: 'Raycast', category: 'Developer Tools', description: 'Your command bar for everything.', mark: 'R' },
-  { name: 'Cursor', category: 'AI Tools', description: 'An editor built for the next decade.', mark: 'C' },
 ]
 
 export const posts: Post[] = [
@@ -143,7 +170,7 @@ export const sponsors: Sponsor[] = [
 
 export type Reel = { url: string; caption: string }
 
-// Top-performing reels from instagram.com/thisis.sambit.
+// Latest reels from instagram.com/thisis.sambit (newest first).
 // Instagram has no public API for "top performing" without the Graph API
 // (business account + token + backend), so this list is curated by hand.
 // Paste the reel permalink and a short caption; order = display order.
@@ -155,6 +182,70 @@ export const reels: Reel[] = [
   { url: 'https://www.instagram.com/reel/DciJgECz5Bx/', caption: 'A week of building in public' },
 ]
 
-export const productCategories =['All', 'SaaS', 'AI', 'Digital Products', 'Developer Tools', 'Experiments']
+export const productCategories =['All', 'SaaS', 'AI', 'Digital Products', 'Developer Tools', 'Coaching', 'Experiments']
 export const setupCategories = ['All', 'Desk', 'Seating', 'Display', 'Workstation', 'Accessories', 'Decor']
-export const resourceCategories = ['All', 'Developer Tools', 'AI Tools', 'SaaS', 'Productivity', 'Design', 'Hosting', 'Learning']
+
+export type Stat = { value: string; label: string }
+
+// Shown in the home hero. Placeholder numbers — replace with your real Instagram figures.
+export const creatorStats: Stat[] = [
+  { value: '32K+', label: 'Instagram followers' },
+  { value: '200+', label: 'Reels published' },
+  { value: '10M+', label: 'Total views' },
+  { value: '500+', label: 'Calls booked' },
+]
+
+export type Highlight = { title: string; description: string; tag: string; tone: 'orange' | 'blue' | 'green' | 'pink' | 'violet'; href: string; linkText: string; wide?: boolean }
+
+export const highlights: Highlight[] = [
+  { title: 'Tech, explained in 60 seconds', description: 'Short reels that break down databases, APIs, AI and system design into something you remember.', tag: 'Reels', tone: 'pink', href: 'https://www.instagram.com/thisis.sambit', linkText: 'Watch on Instagram', wide: true },
+  { title: '1:1 calls', description: 'Mock interviews, resume reviews and weekend catch-ups.', tag: 'Coaching', tone: 'blue', href: '#work-with-me', linkText: 'Book a call' },
+  { title: 'Interview prep', description: 'The most asked DSA questions in JavaScript, in one book.', tag: 'Resources', tone: 'orange', href: '#work-with-me', linkText: 'Get the book' },
+  { title: 'My setup', description: 'Every desk, chair and gadget I use to work and create.', tag: 'Gear', tone: 'green', href: '/setup', linkText: 'See the setup' },
+  { title: 'The build log', description: 'Every product I’ve started — what shipped, what failed and what I learned.', tag: 'Building', tone: 'violet', href: '/products', linkText: 'Read the log' },
+]
+
+export type BuildLogEntry = { name: string; date: string; status: 'Failed' | 'Shipped' | 'Building' | 'Next'; summary: string; lesson?: string; url?: string; logo?: string; stats?: Stat[] }
+
+// Every product I've started — the ones that worked and the ones that didn't. Oldest first.
+export const buildLog: BuildLogEntry[] = [
+  {
+    name: 'InvoiceZero', date: '2025', status: 'Failed', logo: '/logos/invoicezero.png',
+    summary: 'Let AI handle your invoices while you handle the business. My first real product: upload an invoice and AI reads, sorts and tracks it for you.',
+    stats: [
+      { value: '~3,000', label: 'Views' },
+      { value: '1,580', label: 'Sign-ups' },
+      { value: '~50', label: 'Active users' },
+      { value: '0', label: 'Paying customers' },
+    ],
+    lesson: 'Sign-ups aren’t validation. 1,580 people were happy to try it for free, but not one pulled out a card. Next time I find someone willing to pay before I build.',
+  },
+  {
+    name: 'Cuebase', date: '2026', status: 'Failed', url: 'https://www.cuebase.co/', logo: '/logos/cuebase.jpg',
+    summary: 'Customer feedback and testimonial software — collect feedback over email and WhatsApp, route happy customers to Google reviews, and turn the best ones into a Wall of Love. Launched on Product Hunt.',
+    stats: [
+      { value: '500', label: 'Visitors' },
+      { value: '25', label: 'Sign-ups' },
+      { value: '1', label: 'Paying customer' },
+    ],
+    lesson: 'Progress: my first paying customer — proof someone would pay. But 500 visitors wasn’t enough to grow from. Building it was the easy part; getting it in front of the right people is where it stalled.',
+  },
+  {
+    name: 'What’s next', date: 'Now', status: 'Next',
+    summary: 'Taking what InvoiceZero and Cuebase taught me — validate payment first, then solve distribution — into the next build. Logging it here, wins and failures alike.',
+  },
+]
+
+// About page photo section. Put photos in public/gallery/ and list them here.
+// Tiles alternate wide/narrow automatically (wide, narrow, narrow, narrow, wide, narrow…).
+export const aboutQuote = {
+  text: 'Time is money. Always spend money to save time because you cannot earn the time back.',
+  sub: 'Life is short — don’t waste it, and don’t die with regrets.',
+}
+
+export type AboutPhoto = { src: string; alt: string }
+
+export const aboutPhotos: AboutPhoto[] = [
+  { src: '/gallery/sambit-desk.jpg', alt: 'Sambit at his desk' },
+  // { src: '/gallery/your-photo.jpg', alt: 'Short description of the photo' },
+]
